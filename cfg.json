@@ -1,0 +1,9 @@
+{
+    "base" : {
+        "target"        : "Some IP",
+        "method"        : "TCP",
+        "threads"       : "256",
+        "socks_type"    : "5",
+        "duration"      : 3600
+    }
+}
