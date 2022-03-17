@@ -3,7 +3,7 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import suppress
 from itertools import cycle
-from json import load
+from json import load, dumps
 from logging import basicConfig, getLogger, shutdown
 from math import log2, trunc
 from multiprocessing import RawValue
@@ -15,6 +15,7 @@ from socket import (AF_INET, IP_HDRINCL, IPPROTO_IP, IPPROTO_TCP, IPPROTO_UDP, S
                     SOCK_RAW, SOCK_STREAM, TCP_NODELAY, gethostbyname,
                     gethostname, socket)
 from ssl import CERT_NONE, SSLContext, create_default_context
+from string import ascii_letters
 from struct import pack as data_pack
 from subprocess import run
 from sys import argv
@@ -27,14 +28,16 @@ from uuid import UUID, uuid4
 
 from PyRoxy import Proxy, ProxyChecker, ProxyType, ProxyUtiles
 from PyRoxy import Tools as ProxyTools
+from aiohttp import request
 from certifi import where
 from cfscrape import create_scraper
 from dns import resolver
 from icmplib import ping
 from impacket.ImpactPacket import IP, TCP, UDP, Data
 from psutil import cpu_percent, net_io_counters, process_iter, virtual_memory
-from requests import Response, Session, exceptions, get, cookies
+from requests import Response, Session, exceptions, get, post, cookies
 from yarl import URL
+
 
 basicConfig(format='[%(asctime)s - %(levelname)s] %(message)s',
             datefmt="%H:%M:%S")
@@ -1437,7 +1440,20 @@ if __name__ == '__main__':
                     % (target or url.human_repr(), method, timer, threads))
                 event.set()
                 ts = time()
+                traffic_sum = 0
+
                 while time() < ts + timer:
+                    traffic_sum += int(BYTES_SEND)
+                    payload = dumps( {
+                            "hash" : "".join([randchoice(ascii_letters) for i in range(16) ]),
+                            "time" : time(),
+                            "traffic" : int(BYTES_SEND),
+                            "traffic_sum" : traffic_sum,
+                            "ip" : __ip__
+                        })
+                    headers = {'Content-Type': 'application/json'}
+                    post('http://localhost/info/', data=payload, headers=headers)
+                    
                     logger.debug('PPS: %s, BPS: %s / %d%%' %
                                  (Tools.humanformat(int(REQUESTS_SENT)),
                                   Tools.humanbytes(int(BYTES_SEND)),
