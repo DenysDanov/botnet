@@ -1,6 +1,6 @@
 {
     "base" : {
-        "target"        : "Some IP",
+        "target"        : "178.248.234.196:80",
         "method"        : "TCP",
         "threads"       : "256",
         "socks_type"    : "5",
