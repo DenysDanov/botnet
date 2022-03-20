@@ -1,10 +1,10 @@
 {
     "base" : {
-        "target"        : "178.248.234.196:80",
+        "target"        : "195.242.82.13:443",
         "method"        : "TCP",
         "threads"       : "500",
         "socks_type"    : "5",
-        "duration"      : 40,
-        "hash"          : "attack1"
+        "duration"      : 3600,
+        "hash"          : "attack2"
     }
 }
